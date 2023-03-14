@@ -1,4 +1,5 @@
 use crate::models::models_factory::AvailabilityMetric;
+use crate::models::models_factory::CountMetric;
 use crate::models::models_factory::TimingMetric;
 use crate::models::models_factory::WebServiceHealthCheck;
 
@@ -17,13 +18,19 @@ async fn health_check_handler() -> impl Responder {
 
 #[post("/availability")]
 async fn availability_handler(metric: web::Json<AvailabilityMetric>) -> impl Responder {
-    println!("*****\n{}\n*****\n", metric.build_metric_string());
+    println!("{}", metric.build_metric_string());
     HttpResponse::Ok()
 }
 
 #[post("/timing")]
 async fn timing_handler(metric: web::Json<TimingMetric>) -> impl Responder {
-    println!("*****\n{}\n*****\n", metric.build_metric_string());
+    println!("{}", metric.build_metric_string());
+    HttpResponse::Ok()
+}
+
+#[post("/count")]
+async fn count_handler(metric: web::Json<CountMetric>) -> impl Responder {
+    println!("{}", metric.build_metric_string());
     HttpResponse::Ok()
 }
 
@@ -34,6 +41,7 @@ async fn main() -> std::io::Result<()> {
             .service(health_check_handler)
             .service(availability_handler)
             .service(timing_handler)
+            .service(count_handler)
     })
     .bind(("127.0.0.1", 7100))?
     .run()
